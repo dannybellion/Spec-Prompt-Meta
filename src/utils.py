@@ -10,12 +10,13 @@ def load_template() -> str:
         print(f"Warning: {template_path} not found")
         return ""
 
-def render_prompt(template: str, examples: str) -> str:
-    """Render the Jinja2 template with provided template and examples
+def render_prompt(template: str, examples: str, transcript: str) -> str:
+    """Render the Jinja2 template with provided template, examples and transcript
     
     Args:
         template: The template content
         examples: The examples content
+        transcript: The audio transcript content
     
     Returns:
         The rendered prompt
@@ -26,7 +27,8 @@ def render_prompt(template: str, examples: str) -> str:
     jinja_template = Template(template_content)
     return jinja_template.render(
         template=template,
-        examples=examples
+        examples=examples,
+        transcript=transcript
     )
 
 def load_examples() -> str:
