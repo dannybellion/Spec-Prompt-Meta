@@ -1,6 +1,7 @@
 from pathlib import Path
 from models import transcribe_audio, get_chat_response
 from utils import load_template, load_examples, render_prompt
+import os
 
 def main():
     # Transcribe audio files
@@ -19,10 +20,18 @@ def main():
     rendered_prompt = render_prompt(template, examples, transcript)
     print("\nRendered prompt length:", len(rendered_prompt), "characters")
 
-    # Get chat response
+    # Get chat response and save to file
     system_message = "You are a helpful assistant that processes audio transcripts."
     response = get_chat_response(system_message, rendered_prompt)
-    print("\nAI Response:", response)
+    
+    # Ensure output directory exists
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+    
+    # Save response to file
+    output_file = output_dir / "project-spec.md"
+    output_file.write_text(response)
+    print(f"\nProject specification saved to: {output_file}")
 
 
 if __name__ == "__main__":
