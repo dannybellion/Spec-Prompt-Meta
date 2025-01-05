@@ -1,7 +1,6 @@
 from pathlib import Path
-from jinja2 import Template
 from models import transcribe_audio
-from utils import load_template, load_examples
+from utils import load_template, load_examples, render_prompt
 
 def main():
     # Transcribe audio files
@@ -16,16 +15,8 @@ def main():
     template = load_template()
     examples = load_examples()
     
-    # Load and render Jinja template
-    with open('src/prompt.j2') as f:
-        template_content = f.read()
-    
-    jinja_template = Template(template_content)
-    rendered_prompt = jinja_template.render(
-        template=template,
-        examples=examples
-    )
-    
+    # Render prompt
+    rendered_prompt = render_prompt(template, examples)
     print("\nRendered prompt length:", len(rendered_prompt), "characters")
 
 
