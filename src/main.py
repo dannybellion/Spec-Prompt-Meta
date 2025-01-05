@@ -1,21 +1,6 @@
 from pathlib import Path
 from models import transcribe_audio
-
-def load_context_files():
-    """Load the content of spec prompt files from context directory"""
-    context_dir = Path("context")
-    files = {
-        "examples": context_dir / "spec-prompt-examples.md",
-        "template": context_dir / "spec-prompt-template.md"
-    }
-    
-    content = {}
-    for name, filepath in files.items():
-        if filepath.exists():
-            content[name] = filepath.read_text()
-        else:
-            print(f"Warning: {filepath} not found")
-    return content
+from utils import load_template, load_examples
 
 def main():
     # Transcribe audio files
@@ -27,10 +12,11 @@ def main():
     
     # Load context files
     print("\nLoading context files...")
-    context = load_context_files()
-    for name, content in context.items():
-        print(f"\nContext file: {name}")
-        print(f"Length: {len(content)} characters")
+    template = load_template()
+    examples = load_examples()
+    
+    print("\nTemplate file length:", len(template), "characters")
+    print("Examples file length:", len(examples), "characters")
 
 if __name__ == "__main__":
     main()
