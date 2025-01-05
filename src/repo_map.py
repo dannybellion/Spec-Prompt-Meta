@@ -1,6 +1,7 @@
 from pathlib import Path
 import fnmatch
 import os
+from models import get_chat_response
 
 def should_ignore(path: Path, ignore_patterns: list) -> bool:
     """Check if path matches any gitignore patterns."""
@@ -56,7 +57,19 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
         if path.is_dir():
             content.append(f"{indent}- 📁 **{path.name}**/\n")
         else:
-            content.append(f"{indent}- 📄 `{path.name}`\n")
+            content.append(f"{indent}- 📄 `{path.name}`")
+        
+            # Get summary for Python files
+            if path.suffix == '.py':
+                try:
+                    system_msg = "You are a technical documentation assistant. Provide a brief (<50 words) summary of the Python file contents."
+                    file_content = path.read_text()
+                    summary = get_chat_response(system_msg, file_content, model="gpt-4o-mini")
+                    content.append(f" - {summary}\n")
+                except Exception as e:
+                    content.append(f" - Error getting summary: {str(e)}\n")
+            else:
+                content.append("\n")
     
     # Write to file
     with open(output_path, 'w') as f:
