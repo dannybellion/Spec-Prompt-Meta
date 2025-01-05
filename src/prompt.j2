@@ -1,0 +1,27 @@
+<purpose>
+    Take some high level project requirements and create a detailed spec prompt for an AI coding assistant to implement.
+</purpose>
+
+<context>
+    You will be given an audio transcript or some notes about something that needs to be implemented.
+    These will be used to create a detailed spec prompt
+    The prompt will be passed to Aider to implement the code.
+</context>
+
+<transcript>
+{{ transcript }}
+</transcript>
+
+<instructions>
+    <instruction>Use information dense keywords to describe what needs to happen in the code.</instruction>
+    <instruction>Keep instructions as concise as possible.</instruction>
+</instructions>
+
+<template>
+{{ template }}
+</template>
+
+
+<examples>
+{{ examples }}
+</examples>

@@ -1,6 +1,6 @@
 from pathlib import Path
-from models import transcribe_audio, get_chat_response
-from utils import load_template, load_examples, render_prompt
+from .models import transcribe_audio, get_chat_response
+from .utils import load_template, load_examples, render_prompt
 import os
 
 def main():
