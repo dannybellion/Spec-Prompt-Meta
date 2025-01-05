@@ -1,7 +1,8 @@
 import os
+from pathlib import Path
 from openai import OpenAI
 from pydantic import BaseModel
-from typing import List, BinaryIO
+from typing import List, BinaryIO, Dict
 
 # Initialize OpenAI client with API key from environment
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -58,19 +59,30 @@ def get_structured_response(system: str, user: str, response_model: BaseModel, m
     
     return completion.choices[0].message.parsed
 
-def transcribe_audio(audio_file: BinaryIO, model: str = "whisper-1") -> str:
-    """Transcribe audio file to text using OpenAI's Whisper model
+def transcribe_audio(audio_dir: str = "audio", model: str = "whisper-1") -> Dict[str, str]:
+    """Transcribe all audio files in the specified directory using OpenAI's Whisper model
     
     Args:
-        audio_file: An opened audio file (mp3, mp4, mpeg, mpga, m4a, wav, or webm)
+        audio_dir: Directory containing audio files (default: "audio")
         model: The OpenAI model to use (default: whisper-1)
     
     Returns:
-        The transcribed text from the audio file
+        Dictionary mapping filenames to their transcribed text
     """
-    transcription = client.audio.transcriptions.create(
-        model=model,
-        file=audio_file
-    )
+    audio_path = Path(audio_dir)
+    if not audio_path.exists():
+        raise FileNotFoundError(f"Directory {audio_dir} not found")
+        
+    supported_formats = {'.mp3', '.mp4', '.mpeg', '.mpga', '.m4a', '.wav', '.webm'}
+    transcriptions = {}
     
-    return transcription.text
+    for file_path in audio_path.iterdir():
+        if file_path.suffix.lower() in supported_formats:
+            with open(file_path, 'rb') as audio_file:
+                transcription = client.audio.transcriptions.create(
+                    model=model,
+                    file=audio_file
+                )
+                transcriptions[file_path.name] = transcription.text
+    
+    return transcriptions
