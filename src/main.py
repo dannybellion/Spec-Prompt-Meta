@@ -14,9 +14,7 @@ def main():
     print("\nLoading context files...")
     template = load_template()
     examples = load_examples()
-    
-    print("\nTemplate file length:", len(template), "characters")
-    print("Examples file length:", len(examples), "characters")
+
 
 if __name__ == "__main__":
     main()
