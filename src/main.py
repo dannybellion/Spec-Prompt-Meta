@@ -1,5 +1,5 @@
 from pathlib import Path
-from models import transcribe_audio
+from models import transcribe_audio, get_chat_response
 from utils import load_template, load_examples, render_prompt
 
 def main():
@@ -18,6 +18,11 @@ def main():
     # Render prompt
     rendered_prompt = render_prompt(template, examples, transcript)
     print("\nRendered prompt length:", len(rendered_prompt), "characters")
+
+    # Get chat response
+    system_message = "You are a helpful assistant that processes audio transcripts."
+    response = get_chat_response(system_message, rendered_prompt)
+    print("\nAI Response:", response)
 
 
 if __name__ == "__main__":
