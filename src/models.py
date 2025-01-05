@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
 from pydantic import BaseModel
-from typing import List
+from typing import List, BinaryIO
 
 # Initialize OpenAI client with API key from environment
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -57,3 +57,20 @@ def get_structured_response(system: str, user: str, response_model: BaseModel, m
     )
     
     return completion.choices[0].message.parsed
+
+def transcribe_audio(audio_file: BinaryIO, model: str = "whisper-1") -> str:
+    """Transcribe audio file to text using OpenAI's Whisper model
+    
+    Args:
+        audio_file: An opened audio file (mp3, mp4, mpeg, mpga, m4a, wav, or webm)
+        model: The OpenAI model to use (default: whisper-1)
+    
+    Returns:
+        The transcribed text from the audio file
+    """
+    transcription = client.audio.transcriptions.create(
+        model=model,
+        file=audio_file
+    )
+    
+    return transcription.text
