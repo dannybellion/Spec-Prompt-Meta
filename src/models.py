@@ -1,6 +1,10 @@
+import os
 from openai import OpenAI
 from pydantic import BaseModel
 from typing import List
+
+# Initialize OpenAI client with API key from environment
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class Step(BaseModel):
     explanation: str
@@ -21,8 +25,6 @@ def get_chat_response(system_msg: str, user_msg: str, model: str = "gpt-4o") -> 
     Returns:
         The model's response text
     """
-    client = OpenAI()
-    
     completion = client.chat.completions.create(
         model=model,
         messages=[
@@ -45,8 +47,6 @@ def get_structured_response(system_msg: str, user_msg: str, response_model: Base
     Returns:
         A parsed response matching the provided Pydantic model
     """
-    client = OpenAI()
-    
     completion = client.beta.chat.completions.parse(
         model=model,
         messages=[
