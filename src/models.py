@@ -10,36 +10,50 @@ class MathResponse(BaseModel):
     steps: List[Step]
     final_answer: str
 
-def get_chat_response(prompt: str) -> str:
-    """Get a standard chat response from OpenAI"""
+def get_chat_response(system_msg: str, user_msg: str, model: str = "gpt-4o") -> str:
+    """Get a standard chat response from OpenAI
+    
+    Args:
+        system_msg: The system message providing context/instructions
+        user_msg: The user's message/query
+        model: The OpenAI model to use (default: gpt-4o)
+    
+    Returns:
+        The model's response text
+    """
     client = OpenAI()
     
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model=model,
         messages=[
-            {"role": "user", "content": prompt}
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_msg}
         ]
     )
     
     return completion.choices[0].message.content
 
-def get_structured_math_response(problem: str) -> MathResponse:
-    """Get a structured math solution response from OpenAI"""
+def get_structured_response(system_msg: str, user_msg: str, response_model: BaseModel, model: str = "gpt-4o") -> BaseModel:
+    """Get a structured response from OpenAI that conforms to a Pydantic model
+    
+    Args:
+        system_msg: The system message providing context/instructions
+        user_msg: The user's message/query
+        response_model: The Pydantic model class defining the response structure
+        model: The OpenAI model to use (default: gpt-4o)
+    
+    Returns:
+        A parsed response matching the provided Pydantic model
+    """
     client = OpenAI()
     
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o",
+        model=model,
         messages=[
-            {
-                "role": "system", 
-                "content": "You are a helpful math tutor. Guide the user through the solution step by step."
-            },
-            {
-                "role": "user",
-                "content": problem
-            }
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_msg}
         ],
-        response_format=MathResponse
+        response_format=response_model
     )
     
     return completion.choices[0].message.parsed
