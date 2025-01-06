@@ -16,3 +16,10 @@ __*
 # env
 .env
 .aider*
+# Ignore docs folder
+docs/
+
+# Ignore input folders and their contents
+inputs/audio/*
+inputs/text/*
+inputs/readme/*
