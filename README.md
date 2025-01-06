@@ -8,6 +8,14 @@ A tool that generates detailed project specification prompts designed to be used
 - 📝 **Context Integration**: Combines transcripts with template and example files
 - 🤖 **AI-Powered**: Uses GPT-4o to generate structured project specifications
 
+## Details
+
+The emergence of AI coding assistants has fundamentally transformed software development. While these powerful tools can generate complex code with remarkable 
+speed and accuracy, the true art lies in crafting precise, nuanced prompts. The challenge isn't just about generating code, but articulating requirements with clarity, context, and strategic detail.
+
+This project automates the process of generating comprehensive project specifications by leveraging AI's ability to distill and articulate complex requirements. Instead of manually crafting detailed prompts, we use AI to transform raw inputs like audio transcripts, text notes, and README files into precise, actionable project specifications. By removing human bias and leveraging AI's analytical capabilities, we shift the prompt engineering burden directly to the AI, enabling more efficient and objective project scoping.
+
+
 ## Project Structure
 
 The project is organized as follows:
@@ -22,7 +30,7 @@ The project is organized as follows:
 
 1. Install dependencies using uv:
 ```bash
-uv pip install openai pydantic jinja2
+uv sync
 ```
 
 2. Set up your OpenAI API key:
@@ -34,9 +42,7 @@ export OPENAI_API_KEY='your-api-key-here'
 
 1. Place audio files in the `inputs/audio/` directory (supported formats: mp3, mp4, m4a, wav, webm)
 2. Place any text files (.md, .txt) in the `inputs/text/` directory for additional context
-3. Add context files in the `context/` directory:
-   - `spec-prompt-template.md`: Template for specification generation
-   - `spec-prompt-examples.md`: Example specifications
+3. Please the current README.md file in the `inputs/readme/` directory for additional context
 3. Run the main script:
 ```bash
 python -m src.main
@@ -45,25 +51,5 @@ python -m src.main
 The script will:
 1. Transcribe all audio files in the audio directory
 2. Load and combine context files
-3. Generate a project specification using GPT-4
+3. Generate a project specification using GPT-4o
 4. Save the result to `output/project-spec.md`
-
-## Repository Map Generation
-
-The project includes a tool to generate a visual representation of the repository structure:
-
-```bash
-python src/repo_map.py
-```
-
-This will create a markdown file at `output/repo_map.md` showing the project's directory structure.
-
-## Dependencies
-
-- OpenAI
-- Pydantic
-- Jinja2
-
-## License
-
-MIT License
