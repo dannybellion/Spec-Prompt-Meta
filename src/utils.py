@@ -9,28 +9,7 @@ def load_template() -> str:
     else:
         print(f"Warning: {template_path} not found")
         return ""
-
-def render_prompt(template: str, examples: str, transcript: str) -> str:
-    """Render the Jinja2 template with provided template, examples and transcript
     
-    Args:
-        template: The template content
-        examples: The examples content
-        transcript: The audio transcript content
-    
-    Returns:
-        The rendered prompt
-    """
-    with open('src/prompt.j2') as f:
-        template_content = f.read()
-    
-    jinja_template = Template(template_content)
-    return jinja_template.render(
-        template=template,
-        examples=examples,
-        transcript=transcript
-    )
-
 def load_examples() -> str:
     """Load the content of spec prompt examples file"""
     examples_path = Path("context") / "spec-prompt-examples.md"
@@ -38,4 +17,19 @@ def load_examples() -> str:
         return examples_path.read_text()
     else:
         print(f"Warning: {examples_path} not found")
-        return ""
+        return ""   
+
+def render_prompt(template: str, examples: str, transcript: str, repo_map: str) -> str:
+    """Render the Jinja2 template with provided template, examples and transcript"""
+    with open('src/prompt.j2') as f:
+        template_content = f.read()
+    
+    jinja_template = Template(template_content)
+    return jinja_template.render(
+        template=template,
+        examples=examples,
+        transcript=transcript,
+        repo_map=repo_map
+    )
+
+

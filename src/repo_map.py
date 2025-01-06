@@ -43,18 +43,16 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
     
     # Define allowed paths
     repo_root = Path(".")
-    allowed_paths = [
-        repo_root / "src",
-        repo_root / "README.md",
-    ]
+    allowed_paths = [repo_root / "src",repo_root]
     
     # Add root .toml and .txt files
     allowed_paths.extend(repo_root.glob("*.toml"))
     allowed_paths.extend(repo_root.glob("*.txt"))
-    
+    allowed_paths.extend(repo_root.glob("*.md"))
+    allowed_paths.extend(repo_root.glob("*.py"))
     # Process src directory
     for base_path in allowed_paths:
-        if base_path.is_dir():
+        if allowed_paths.is_dir():
             paths = sorted(base_path.rglob("*"))
         else:
             paths = [base_path]
@@ -76,16 +74,16 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
             content.append(f"{indent}- 📄 `{path.name}`")
         
             # Get summary for Python files
-            if path.suffix == '.py':
-                try:
-                    system_msg = "You are a technical documentation assistant. Provide a brief (<50 words) summary of the Python file contents."
-                    file_content = path.read_text()
-                    summary = get_chat_response(system_msg, file_content, model="gpt-4o-mini")
-                    content.append(f" - {summary}\n")
-                except Exception as e:
-                    content.append(f" - Error getting summary: {str(e)}\n")
-            else:
-                content.append("\n")
+            # if path.suffix == '.py':
+            #     try:
+            #         system_msg = "You are a technical documentation assistant. Provide a brief (<50 words) summary of the Python file contents."
+            #         file_content = path.read_text()
+            #         summary = get_chat_response(system_msg, file_content, model="gpt-4o-mini")
+            #         content.append(f" - {summary}\n")
+            #     except Exception as e:
+            #         content.append(f" - Error getting summary: {str(e)}\n")
+            # else:
+            #     content.append("\n")
     
     # Write to file
     with open(output_path, 'w') as f:
