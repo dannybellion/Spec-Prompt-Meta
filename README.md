@@ -1,13 +1,12 @@
 # AI Project Specification Generator
 
-A tool that generates detailed project specifications from audio transcripts and context files using OpenAI's GPT and Whisper APIs.
+A tool that generates detailed project specification prompts designed to be used by AI coding assistants.
 
 ## Features
 
 - 🎤 **Audio Transcription**: Automatically transcribes audio files using OpenAI's Whisper model
 - 📝 **Context Integration**: Combines transcripts with template and example files
-- 🤖 **AI-Powered**: Uses GPT-4 to generate structured project specifications
-- 🗺️ **Repository Mapping**: Generates clear repository structure documentation
+- 🤖 **AI-Powered**: Uses GPT-4o to generate structured project specifications
 
 ## Project Structure
 
@@ -18,7 +17,6 @@ The project is organized as follows:
   - `models.py`: OpenAI API integration and data models
   - `utils.py`: Utility functions for file handling and template rendering
   - `prompt.j2`: Jinja2 template for prompt generation
-  - `repo_map.py`: Repository structure documentation generator
 
 ## Setup
 
