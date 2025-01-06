@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from openai import OpenAI
 from pydantic import BaseModel
-from typing import List, BinaryIO, Dict
+from typing import List, BinaryIO, Dict, Optional
 
 # Initialize OpenAI client with API key from environment
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -58,6 +58,28 @@ def get_structured_response(system: str, user: str, response_model: BaseModel, m
     )
     
     return completion.choices[0].message.parsed
+
+def load_text_files(text_dir: str = "inputs/text") -> Dict[str, str]:
+    """Load all markdown and text files from the specified directory
+    
+    Args:
+        text_dir: Directory containing text files (default: "inputs/text")
+    
+    Returns:
+        Dictionary mapping filenames to their contents
+    """
+    text_path = Path(text_dir)
+    if not text_path.exists():
+        return {}
+        
+    text_files = {}
+    supported_formats = {'.md', '.txt'}
+    
+    for file_path in text_path.iterdir():
+        if file_path.suffix.lower() in supported_formats:
+            text_files[file_path.name] = file_path.read_text()
+    
+    return text_files
 
 def transcribe_audio(audio_dir: str = "inputs/audio", model: str = "whisper-1") -> Dict[str, str]:
     """Transcribe all audio files in the specified directory using OpenAI's Whisper model

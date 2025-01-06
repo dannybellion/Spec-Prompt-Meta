@@ -1,5 +1,5 @@
 from pathlib import Path
-from .models import transcribe_audio, get_chat_response
+from .models import transcribe_audio, get_chat_response, load_text_files
 from .utils import load_template, load_examples, render_prompt
 import os
 
@@ -10,6 +10,15 @@ def main():
     for filename, text in transcript.items():
         print(f"\nFile: {filename}")
         print(f"Transcription: {text}")
+    
+    # Load text files
+    print("\nLoading text files...")
+    text_files = load_text_files()
+    if text_files:
+        for filename, content in text_files.items():
+            print(f"\nLoaded text file: {filename}")
+    else:
+        print("No text files found in inputs/text/")
     
     # Load context files
     print("\nLoading context files...")
