@@ -41,14 +41,30 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
     content = ["# Repository Map\n\n"]
     content.append("## Directory Structure\n\n")
     
-    # Walk through repository
+    # Define allowed paths
     repo_root = Path(".")
-    for path in sorted(repo_root.rglob("*")):
-        # Skip git directory and ignored files
-        if ".git" in path.parts or should_ignore(path, ignore_patterns):
-            continue
+    allowed_paths = [
+        repo_root / "src",
+        repo_root / "README.md",
+    ]
+    
+    # Add root .toml and .txt files
+    allowed_paths.extend(repo_root.glob("*.toml"))
+    allowed_paths.extend(repo_root.glob("*.txt"))
+    
+    # Process src directory
+    for base_path in allowed_paths:
+        if base_path.is_dir():
+            paths = sorted(base_path.rglob("*"))
+        else:
+            paths = [base_path]
             
-        # Calculate relative path and indentation level
+        for path in paths:
+            # Skip ignored files
+            if should_ignore(path, ignore_patterns):
+                continue
+                
+            # Calculate relative path and indentation level
         rel_path = path.relative_to(repo_root)
         depth = len(rel_path.parts) - 1
         indent = "  " * depth
