@@ -52,7 +52,7 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
     allowed_paths.extend(repo_root.glob("*.py"))
     # Process src directory
     for base_path in allowed_paths:
-        if allowed_paths.is_dir():
+        if base_path.is_dir():
             paths = sorted(base_path.rglob("*"))
         else:
             paths = [base_path]
@@ -63,9 +63,9 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
                 continue
                 
             # Calculate relative path and indentation level
-        rel_path = path.relative_to(repo_root)
-        depth = len(rel_path.parts) - 1
-        indent = "  " * depth
+            rel_path = path.relative_to(repo_root)
+            depth = len(rel_path.parts) - 1
+            indent = "  " * depth
         
         # Add to content
         if path.is_dir():
