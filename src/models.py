@@ -59,11 +59,11 @@ def get_structured_response(system: str, user: str, response_model: BaseModel, m
     
     return completion.choices[0].message.parsed
 
-def transcribe_audio(audio_dir: str = "audio", model: str = "whisper-1") -> Dict[str, str]:
+def transcribe_audio(audio_dir: str = "inputs/audio", model: str = "whisper-1") -> Dict[str, str]:
     """Transcribe all audio files in the specified directory using OpenAI's Whisper model
     
     Args:
-        audio_dir: Directory containing audio files (default: "audio")
+        audio_dir: Directory containing audio files (default: "inputs/audio")
         model: The OpenAI model to use (default: whisper-1)
     
     Returns:
