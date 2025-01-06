@@ -19,7 +19,7 @@ def load_examples() -> str:
         print(f"Warning: {examples_path} not found")
         return ""   
 
-def render_prompt(template: str, examples: str, transcript: str, repo_map: str) -> str:
+def render_prompt(template: str, examples: str, transcript: str, readme: str) -> str:
     """Render the Jinja2 template with provided template, examples and transcript"""
     with open('src/prompt.j2') as f:
         template_content = f.read()
@@ -29,7 +29,7 @@ def render_prompt(template: str, examples: str, transcript: str, repo_map: str) 
         template=template,
         examples=examples,
         transcript=transcript,
-        repo_map=repo_map
+        readme=readme
     )
 
 
