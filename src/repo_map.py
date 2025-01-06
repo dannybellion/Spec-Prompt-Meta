@@ -41,41 +41,54 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
     content = ["# Repository Map\n\n"]
     content.append("## Directory Structure\n\n")
     
-    # Define allowed paths
+    # Define allowed paths and structure
     repo_root = Path(".")
-    allowed_paths = [
-        repo_root / "src",
+    
+    # Start with root level files
+    root_files = [
         repo_root / "README.md",
         *repo_root.glob("*.toml"),
         *repo_root.glob("*.txt"),
     ]
     
+    # Track processed paths and folder structure
     processed_paths = set()
+    folder_structure = {}
     
-    # Process each allowed path
-    for base_path in allowed_paths:
-        if base_path.is_dir():
-            # For directories, process all files recursively
-            for path in sorted(base_path.rglob("*")):
-                if not should_ignore(path, ignore_patterns) and path not in processed_paths:
-                    rel_path = path.relative_to(repo_root)
-                    depth = len(rel_path.parts) - 1
-                    indent = "  " * depth
-                    
-                    if path.is_dir():
-                        content.append(f"{indent}- 📁 **{path.name}**/\n")
-                    else:
-                        content.append(f"{indent}- 📄 `{path.name}`\n")
-                    
-                    processed_paths.add(path)
-        else:
-            # For individual files
-            if not should_ignore(base_path, ignore_patterns) and base_path not in processed_paths:
-                rel_path = base_path.relative_to(repo_root)
+    # Process root files first
+    for path in sorted(root_files):
+        if not should_ignore(path, ignore_patterns) and path not in processed_paths:
+            content.append(f"- 📄 `{path.name}`\n")
+            processed_paths.add(path)
+    
+    # Process src directory
+    src_path = repo_root / "src"
+    if src_path.exists():
+        content.append("\n- 📁 **src**/\n")  # Add src folder header
+        
+        # First collect and sort all valid paths
+        valid_paths = []
+        for path in sorted(src_path.rglob("*")):
+            if not should_ignore(path, ignore_patterns) and "__pycache__" not in str(path):
+                valid_paths.append(path)
+        
+        # Process directories first
+        for path in valid_paths:
+            if path.is_dir() and path not in processed_paths:
+                rel_path = path.relative_to(repo_root)
                 depth = len(rel_path.parts) - 1
                 indent = "  " * depth
-                content.append(f"{indent}- 📄 `{base_path.name}`\n")
-                processed_paths.add(base_path)
+                content.append(f"{indent}- 📁 **{path.name}**/\n")
+                processed_paths.add(path)
+        
+        # Then process files
+        for path in valid_paths:
+            if not path.is_dir() and path not in processed_paths:
+                rel_path = path.relative_to(repo_root)
+                depth = len(rel_path.parts) - 1
+                indent = "  " * depth
+                content.append(f"{indent}- 📄 `{path.name}`\n")
+                processed_paths.add(path)
         
             # Get summary for Python files
             # if path.suffix == '.py':
