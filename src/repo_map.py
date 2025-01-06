@@ -72,23 +72,33 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
             if not should_ignore(path, ignore_patterns) and "__pycache__" not in str(path):
                 valid_paths.append(path)
         
-        # Process directories first
-        for path in valid_paths:
-            if path.is_dir() and path not in processed_paths:
-                rel_path = path.relative_to(repo_root)
-                depth = len(rel_path.parts) - 1
-                indent = "  " * depth
-                content.append(f"{indent}- 📁 **{path.name}**/\n")
-                processed_paths.add(path)
+        # Process directories and their files together
+        def process_directory(current_path, current_depth=0):
+            indent = "  " * current_depth
+            
+            # Process directories first
+            dirs = []
+            files = []
+            for path in valid_paths:
+                if path.parent == current_path:
+                    if path.is_dir() and path not in processed_paths:
+                        dirs.append(path)
+                    elif not path.is_dir() and path not in processed_paths:
+                        files.append(path)
+            
+            # Add files directly under current directory
+            for file in sorted(files):
+                content.append(f"{indent}- 📄 `{file.name}`\n")
+                processed_paths.add(file)
+            
+            # Process subdirectories
+            for dir_path in sorted(dirs):
+                content.append(f"{indent}- 📁 **{dir_path.name}**/\n")
+                processed_paths.add(dir_path)
+                process_directory(dir_path, current_depth + 1)
         
-        # Then process files
-        for path in valid_paths:
-            if not path.is_dir() and path not in processed_paths:
-                rel_path = path.relative_to(repo_root)
-                depth = len(rel_path.parts) - 1
-                indent = "  " * depth
-                content.append(f"{indent}- 📄 `{path.name}`\n")
-                processed_paths.add(path)
+        # Start processing from src directory
+        process_directory(src_path)
         
             # Get summary for Python files
             # if path.suffix == '.py':
