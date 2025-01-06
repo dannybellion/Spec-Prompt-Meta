@@ -76,7 +76,7 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
         def process_directory(current_path, current_depth=0):
             indent = "  " * current_depth
             
-            # Process directories first
+            # Process directories and files
             dirs = []
             files = []
             for path in valid_paths:
@@ -86,16 +86,17 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
                     elif not path.is_dir() and path not in processed_paths:
                         files.append(path)
             
-            # Add files directly under current directory
-            for file in sorted(files):
-                content.append(f"{indent}- 📄 `{file.name}`\n")
-                processed_paths.add(file)
-            
-            # Process subdirectories
+            # Process subdirectories first
             for dir_path in sorted(dirs):
                 content.append(f"{indent}- 📁 **{dir_path.name}**/\n")
                 processed_paths.add(dir_path)
+                # Recursively process the subdirectory
                 process_directory(dir_path, current_depth + 1)
+            
+            # Then add files under current directory
+            for file in sorted(files):
+                content.append(f"{indent}- 📄 `{file.name}`\n")
+                processed_paths.add(file)
         
         # Start processing from src directory
         process_directory(src_path)
