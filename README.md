@@ -20,9 +20,9 @@ The project is organized as follows:
 
 ## Setup
 
-1. Install dependencies:
+1. Install dependencies using uv:
 ```bash
-pip install openai pydantic jinja2
+uv pip install openai pydantic jinja2
 ```
 
 2. Set up your OpenAI API key:
@@ -32,8 +32,9 @@ export OPENAI_API_KEY='your-api-key-here'
 
 ## Usage
 
-1. Place audio files in the `audio/` directory (supported formats: mp3, mp4, m4a, wav, webm)
-2. Add context files in the `context/` directory:
+1. Place audio files in the `inputs/audio/` directory (supported formats: mp3, mp4, m4a, wav, webm)
+2. Place any text files (.md, .txt) in the `inputs/text/` directory for additional context
+3. Add context files in the `context/` directory:
    - `spec-prompt-template.md`: Template for specification generation
    - `spec-prompt-examples.md`: Example specifications
 3. Run the main script:
