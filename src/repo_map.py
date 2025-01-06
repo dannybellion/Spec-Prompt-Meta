@@ -43,35 +43,39 @@ def generate_repo_map(output_path: str = "output/repo_map.md") -> None:
     
     # Define allowed paths
     repo_root = Path(".")
-    allowed_paths = [repo_root / "src",repo_root]
+    allowed_paths = [
+        repo_root / "src",
+        repo_root / "README.md",
+        *repo_root.glob("*.toml"),
+        *repo_root.glob("*.txt"),
+    ]
     
-    # Add root .toml and .txt files
-    allowed_paths.extend(repo_root.glob("*.toml"))
-    allowed_paths.extend(repo_root.glob("*.txt"))
-    allowed_paths.extend(repo_root.glob("*.md"))
-    allowed_paths.extend(repo_root.glob("*.py"))
-    # Process src directory
+    processed_paths = set()
+    
+    # Process each allowed path
     for base_path in allowed_paths:
         if base_path.is_dir():
-            paths = sorted(base_path.rglob("*"))
+            # For directories, process all files recursively
+            for path in sorted(base_path.rglob("*")):
+                if not should_ignore(path, ignore_patterns) and path not in processed_paths:
+                    rel_path = path.relative_to(repo_root)
+                    depth = len(rel_path.parts) - 1
+                    indent = "  " * depth
+                    
+                    if path.is_dir():
+                        content.append(f"{indent}- 📁 **{path.name}**/\n")
+                    else:
+                        content.append(f"{indent}- 📄 `{path.name}`\n")
+                    
+                    processed_paths.add(path)
         else:
-            paths = [base_path]
-            
-        for path in paths:
-            # Skip ignored files
-            if should_ignore(path, ignore_patterns):
-                continue
-                
-            # Calculate relative path and indentation level
-            rel_path = path.relative_to(repo_root)
-            depth = len(rel_path.parts) - 1
-            indent = "  " * depth
-        
-        # Add to content
-        if path.is_dir():
-            content.append(f"{indent}- 📁 **{path.name}**/\n")
-        else:
-            content.append(f"{indent}- 📄 `{path.name}`")
+            # For individual files
+            if not should_ignore(base_path, ignore_patterns) and base_path not in processed_paths:
+                rel_path = base_path.relative_to(repo_root)
+                depth = len(rel_path.parts) - 1
+                indent = "  " * depth
+                content.append(f"{indent}- 📄 `{base_path.name}`\n")
+                processed_paths.add(base_path)
         
             # Get summary for Python files
             # if path.suffix == '.py':
